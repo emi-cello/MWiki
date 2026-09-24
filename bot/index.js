@@ -46,9 +46,6 @@ client.on("messageCreate", async (message) => {
 
 ${content}
 
----
-
-Imported automatically from Discord.
 `;
 
         const path = `docs/versions/V${version}.md`;
