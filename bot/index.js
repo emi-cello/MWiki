@@ -126,27 +126,28 @@ if (query === "help" || !query) {
     // ?m list
     if (query === "list") {
 
-    const files = fs.readdirSync(versionsDir)
-        .filter(f => /^V.*\.md$/i.test(f))
-        .sort((a, b) => {
+const files = fs.readdirSync(versionsDir)
+    .filter(f => /^V.*\.md$/i.test(f))
+    .sort((a, b) => {
 
-        const va = a
-            .replace(/^V/i, "")
-            .replace(".md", "");
+        const va = a.replace(/^V/i, "").replace(".md", "");
+        const vb = b.replace(/^V/i, "").replace(".md", "");
 
-        const vb = b
-            .replace(/^V/i, "")
-            .replace(".md", "");
+        const pa = va.split(/[a-z]/i)[0].split(".").map(Number);
+        const pb = vb.split(/[a-z]/i)[0].split(".").map(Number);
 
-        return vb.localeCompare(
-            va,
-            undefined,
-        {
-            numeric: true,
-            sensitivity: "base"
+        for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+
+            const na = pa[i] || 0;
+            const nb = pb[i] || 0;
+
+            if (na !== nb) {
+                return nb - na;
+            }
         }
-        );
-        });
+
+        return vb.localeCompare(va);
+    });
 
     if (files.length === 0) {
         return message.reply("No versions found.");
@@ -175,10 +176,27 @@ if (query === "help" || !query) {
 if (query === "latest") {
 
     const files = fs.readdirSync(versionsDir)
-        .filter(f => /^V.*\.md$/i.test(f))
-        .sort()
-        .reverse();
+    .filter(f => /^V.*\.md$/i.test(f))
+    .sort((a, b) => {
 
+        const va = a.replace(/^V/i, "").replace(".md", "");
+        const vb = b.replace(/^V/i, "").replace(".md", "");
+
+        const pa = va.split(/[a-z]/i)[0].split(".").map(Number);
+        const pb = vb.split(/[a-z]/i)[0].split(".").map(Number);
+
+        for (let i = 0; i < Math.max(pa.length, pb.length); i++) {
+
+            const na = pa[i] || 0;
+            const nb = pb[i] || 0;
+
+            if (na !== nb) {
+                return nb - na;
+            }
+        }
+
+        return vb.localeCompare(va);
+    });
     if (files.length === 0) {
         return message.reply("No versions found.");
     }
