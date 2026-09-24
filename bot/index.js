@@ -31,21 +31,27 @@ client.on("messageCreate", async (message) => {
 
         const content = message.content.trim();
 
-        const versionMatch = content.match(
-            content.match(/v\d+\.\d+(?:\.\d+)?/i)
+        const firstLine = content.split("\n")[0];
+
+        const versionMatch = firstLine.match(
+            /v\d+\.\d+(?:\.\d+)?[a-z]?/i
         );
 
         if (!versionMatch) {
-            console.log("No version found in message.");
+            console.log("No version found.");
             return;
         }
 
-        const version =
-            versionMatch[0]
-                .replace(/^v/i, "")
-                .trim();
+        const version = versionMatch[0]
+            .replace(/^v/i, "")
+            .trim();
+
+        console.log("Detected version:", version);
 
         const markdown = `# Version ${version}
+
+${content}
+;
 
 ${content}
 
