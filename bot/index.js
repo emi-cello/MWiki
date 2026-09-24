@@ -19,7 +19,7 @@ const github = new Octokit({
     auth: process.env.GITHUB_TOKEN
 });
 
-client.once("ready", () => {
+client.once("clientReady", () => {
     console.log(`Logged in as ${client.user.tag}`);
 });
 
@@ -32,15 +32,15 @@ client.on("messageCreate", async (message) => {
         const content = message.content.trim();
 
         const versionMatch =
-            content.match(/(\d+\.\d+\.\d+)/) ||
-            content.match(/Version\s+(\d+\.\d+\.\d+)/i);
+            content.match(/v\d+\.\d+(?:\.\d+)?/i) ||
+            content.match(/\d+\.\d+\.\d+/);
 
         if (!versionMatch) {
             console.log("No version found in message.");
             return;
         }
 
-        const version = versionMatch[1];
+        const version = versionMatch[0].replace(/^v/i, "");
 
         const markdown = `# Version ${version}
 
