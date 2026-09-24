@@ -93,19 +93,19 @@ if (query === "help" || !query) {
         .setDescription("Available MoonWiki Commands")
         .addFields(
             {
-                name: "?m help",
+                name: "`?m help`",
                 value: "Show this help menu"
             },
             {
-                name: "?m list",
+                name: "`?m list`",
                 value: "Show all available versions"
             },
             {
-                name: "?m latest",
+                name: "`?m latest`",
                 value: "Show the newest release note"
             },
             {
-                name: "?m V1.0.0",
+                name: "`?m V1.0.0`",
                 value: "Show a specific version"
             }
         )
