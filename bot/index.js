@@ -105,6 +105,10 @@ if (query === "help" || !query) {
                 value: "Show all available versions"
             },
             {
+                name: "`?m search --`",
+                value: "Search release notes for a keyword"
+            },
+            {
                 name: "`?m latest`",
                 value: "Show the newest release note"
             },
@@ -171,6 +175,71 @@ const files = fs.readdirSync(versionsDir)
     });
 }
 
+// ?m search keyword
+if (query === "search") {
+
+    const keyword = args.slice(2).join(" ");
+
+    if (!keyword) {
+
+        return message.reply(
+            "❌ Usage: `?m search <keyword>`"
+        );
+    }
+
+    const files = fs.readdirSync(versionsDir)
+        .filter(f => /^V.*\.md$/i.test(f));
+
+    const matches = [];
+
+    for (const file of files) {
+
+        const content = fs.readFileSync(
+            path.join(versionsDir, file),
+            "utf8"
+        );
+
+        if (
+            content
+                .toLowerCase()
+                .includes(keyword.toLowerCase())
+        ) {
+
+            matches.push(
+                file.replace(".md", "")
+            );
+        }
+    }
+
+    if (matches.length === 0) {
+
+        const noResultsEmbed = new EmbedBuilder()
+            .setColor("#c1b4f9")
+            .setTitle("🔍 Search Results")
+            .setDescription(
+                `No results found for **${keyword}**`
+            );
+
+        return message.reply({
+            embeds: [noResultsEmbed]
+        });
+    }
+
+    const searchEmbed = new EmbedBuilder()
+        .setColor("#c1b4f9")
+        .setTitle("🔍 Search Results")
+        .setDescription(
+            `Results for **${keyword}**\n\n` +
+            matches.map(v => `• ${v}`).join("\n")
+        )
+        .setFooter({
+            text: `${matches.length} version(s) found`
+        });
+
+    return message.reply({
+        embeds: [searchEmbed]
+    });
+}
 
     // ?m latest
 if (query === "latest") {
