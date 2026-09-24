@@ -1,6 +1,10 @@
 require("dotenv").config();
 
-const { Client, GatewayIntentBits } = require("discord.js");
+const {
+    Client,
+    GatewayIntentBits,
+    EmbedBuilder
+} = require("discord.js");
 const { Octokit } = require("@octokit/rest");
 
 const client = new Client({
@@ -80,72 +84,108 @@ client.on("messageCreate", async (message) => {
         "docs",
         "versions"
     );
+//?m help
+if (query === "help" || !query) {
 
-    // ?m help
-    if (query === "help" || !query) {
-        return message.reply(`
-📚 **MoonWiki Commands**
+    const helpEmbed = new EmbedBuilder()
+        .setColor("#c1b4f9")
+        .setTitle("📚 MoonWiki Help")
+        .setDescription("Available MoonWiki Commands")
+        .addFields(
+            {
+                name: "?m help",
+                value: "Show this help menu"
+            },
+            {
+                name: "?m list",
+                value: "Show all available versions"
+            },
+            {
+                name: "?m latest",
+                value: "Show the newest release note"
+            },
+            {
+                name: "?m V1.0.0",
+                value: "Show a specific version"
+            }
+        )
+        .setFooter({
+            text: "MoonWiki"
+        })
+        .setTimestamp();
 
-\`?m help\`
-Show this help menu.
-
-\`?m list\`
-Show all available versions.
-
-\`?m latest\`
-Show the latest version.
-
-\`?m V1.0.0\`
-Show a specific version.
-`);
-    }
+    return message.reply({
+        embeds: [helpEmbed]
+    });
+}
 
     // ?m list
     if (query === "list") {
 
-        const files = fs.readdirSync(versionsDir)
-            .filter(f => /^V.*\.md$/i.test(f))
-            .sort()
-            .reverse();
+    const files = fs.readdirSync(versionsDir)
+        .filter(f => /^V.*\.md$/i.test(f))
+        .sort()
+        .reverse();
 
-        if (files.length === 0) {
-            return message.reply("No versions found.");
-        }
-
-        const list = files
-            .map(f => f.replace(".md", ""))
-            .join("\n");
-
-        return message.reply(
-            `📋 **Available Versions:**\n\n${list}`
-        );
+    if (files.length === 0) {
+        return message.reply("No versions found.");
     }
+
+    const list = files
+        .map(f => `• ${f.replace(".md", "")}`)
+        .join("\n");
+
+    const listEmbed = new EmbedBuilder()
+        .setColor("#c1b4f9")
+        .setTitle("📋 Available Versions")
+        .setDescription(list)
+        .setFooter({
+            text: `${files.length} versions available`
+        })
+        .setTimestamp();
+
+    return message.reply({
+        embeds: [listEmbed]
+    });
+}
+
 
     // ?m latest
-    if (query === "latest") {
+if (query === "latest") {
 
-        const files = fs.readdirSync(versionsDir)
-            .filter(f => /^V.*\.md$/i.test(f))
-            .sort()
-            .reverse();
+    const files = fs.readdirSync(versionsDir)
+        .filter(f => /^V.*\.md$/i.test(f))
+        .sort()
+        .reverse();
 
-        if (files.length === 0) {
-            return message.reply("No versions found.");
-        }
-
-        const latestFile = files[0];
-
-        const content = fs.readFileSync(
-            path.join(versionsDir, latestFile),
-            "utf8"
-        );
-
-        return message.reply(
-            "```md\n" +
-            content.slice(0, 1800) +
-            "\n```"
-        );
+    if (files.length === 0) {
+        return message.reply("No versions found.");
     }
+
+    const latestFile = files[0];
+
+    const content = fs.readFileSync(
+        path.join(versionsDir, latestFile),
+        "utf8"
+    );
+
+    const latestEmbed = new EmbedBuilder()
+        .setColor("#c1b4f9")
+        .setTitle(`📄 ${latestFile.replace(".md", "")}`)
+        .setDescription(
+            content.length > 4000
+                ? content.slice(0, 3997) + "..."
+                : content
+        )
+        .setFooter({
+            text: "Latest Release Note"
+        })
+        .setTimestamp();
+
+    return message.reply({
+        embeds: [latestEmbed]
+    });
+}
 
     // ?m V1.0.0
     const filename = `${query}.md`;
@@ -166,11 +206,22 @@ Show a specific version.
         "utf8"
     );
 
-    message.reply(
-        "```md\n" +
-        content.slice(0, 1800) +
-        "\n```"
-    );
+    const versionEmbed = new EmbedBuilder()
+    .setColor("#c1b4f9")
+    .setTitle(`📄 ${query}`)
+    .setDescription(
+        content.length > 4000
+            ? content.slice(0, 3997) + "..."
+            : content
+    )
+    .setFooter({
+        text: "MoonWiki Release Notes"
+    })
+    .setTimestamp();
+
+return message.reply({
+    embeds: [versionEmbed]
+});
 });
 
 client.login(process.env.DISCORD_TOKEN);
