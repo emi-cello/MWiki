@@ -50,8 +50,6 @@ client.on("messageCreate", async (message) => {
 
         const markdown = `# Version ${version}
 
-${content}
-;
 
 ${content}
 
