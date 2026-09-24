@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MoonWiki Documentation</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .docs-container {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+
+        .docs-sidebar {
+            position: sticky;
+            top: 80px;
+            height: fit-content;
+            max-height: calc(100vh - 100px);
+            overflow-y: auto;
+            background: var(--DarkPurple);
+            border: 1px var(--periwinle) solid;
+            border-radius: 10px;
+            padding: 20px;
+        }
+
+        .docs-sidebar h3 {
+            color: var(--periwinle-solid);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .docs-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .docs-nav li {
+            margin-bottom: 5px;
+        }
+
+        .docs-nav a {
+            color: var(--text);
+            text-decoration: none;
+            display: block;
+            padding: 8px 12px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        .docs-nav a:hover {
+            background: rgba(193, 180, 249, 0.1);
+            color: var(--periwinle-solid);
+        }
+
+        .docs-nav a.active {
+            background: var(--periwinle-solid);
+            color: #000;
+        }
+
+        .docs-nav .category {
+            font-weight: bold;
+            color: var(--periwinle-solid);
+            margin-top: 15px;
+            margin-bottom: 10px;
+            padding: 5px 12px;
+            font-size: 0.95rem;
+        }
+
+        .docs-content {
+            background: var(--DarkPurple);
+            border: 1px var(--periwinle) solid;
+            border-radius: 10px;
+            padding: 40px;
+            min-height: 600px;
+        }
+
+        .docs-content h1 {
+            color: var(--periwinle-solid);
+            margin-bottom: 20px;
+            font-size: 2.5rem;
+        }
+
+        .docs-content h2 {
+            color: var(--periwinle-solid);
+            margin-top: 40px;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+        }
+
+        .docs-content h3 {
+            color: var(--periwinle-solid);
+            margin-top: 30px;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .docs-content p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .docs-content code {
+            background: rgba(0, 0, 0, 0.3);
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: var(--periwinle-solid);
+        }
+
+        .docs-content pre {
+            background: rgba(0, 0, 0, 0.5);
+            padding: 15px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 20px 0;
+            border: 1px var(--periwinle) solid;
+        }
+
+        .docs-content pre code {
+            background: none;
+            padding: 0;
+            color: #a5d6ff;
+        }
+
+        .docs-content ul, .docs-content ol {
+            color: var(--text-muted);
+            margin-left: 20px;
+            margin-bottom: 15px;
+        }
+
+        .docs-content li {
+            margin-bottom: 8px;
+            line-height: 1.6;
+        }
+
+        .docs-content a {
+            color: var(--periwinle-solid);
+            text-decoration: none;
+        }
+
+        .docs-content a:hover {
+            text-decoration: underline;
+        }
+
+        .docs-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        .docs-content th, .docs-content td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px var(--periwinle) solid;
+        }
+
+        .docs-content th {
+            background: var(--DarkPurple-solid);
+            color: var(--periwinle-solid);
+            font-weight: bold;
+        }
+
+        .docs-content blockquote {
+            border-left: 4px solid var(--periwinle-solid);
+            padding-left: 20px;
+            margin: 20px 0;
+            color: var(--text-muted);
+            font-style: italic;
+        }
+
+        .docs-content hr {
+            border: none;
+            border-top: 1px var(--periwinle) solid;
+            margin: 30px 0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-muted);
+        }
+
+        .back-btn {
+            display: inline-block;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: var(--DarkPurple);
+            border: 1px var(--periwinle) solid;
+            border-radius: 5px;
+            color: var(--text);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .back-btn:hover {
+            background: #36394c70;
+            box-shadow: 0 0 15px rgba(193, 180, 249, 0.3);
+        }
+
+        @media (max-width: 768px) {
+            .docs-container {
+                grid-template-columns: 1fr;
+                padding: 80px 20px 20px;
+            }
+
+            .docs-sidebar {
+                position: relative;
+                top: 0;
+                max-height: none;
+                margin-bottom: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Moon Background -->
+    <img src="assets/moon-bg.png" alt="Moon Background" class="moon">
+
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="logo-container">
+            <div class="logo">
+                <img src="assets/logo.png" alt="MoonWiki Logo" class="logo-img">
+            </div>
+            <span class="logo-text">MoonWiki</span>
+        </div>
+        <div class="nav-buttons">
+            <a href="index.html" class="nav-btn">Home</a>
+            <a href="docs.html" class="nav-btn active">Docs</a>
+            <a href="index.html#mods" class="nav-btn">Mods</a>
+        </div>
+        <div id="nav-menu">☰</div>
+    </nav>
+
+    <!-- Slide-out Navigation -->
+    <ul class="nav-link">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="docs.html">Documentation</a></li>
+        <li><a href="index.html#mods">Mods Directory</a></li>
+        <li><a href="index.html#minecraft-compat">Minecraft Compatibility</a></li>
+    </ul>
+
+    <!-- Documentation Container -->
+    <div class="docs-container">
+        <!-- Sidebar Navigation -->
+        <aside class="docs-sidebar">
+            <h3>Documentation</h3>
+            <ul class="docs-nav">
+                <li class="category">Quick Select</li>
+                <li><a href="#" data-doc="docs/README.md" class="active">Home</a></li>
+                <li><a href="#" data-doc="docs/VerList.md" class="active">Version List</a></li>
+                
+                
+                <li class="category">--</li>
+                <li><a href="#" data-doc="docs/--.md">--</a></li>
+            </ul>
+        </aside>
+
+        <!-- Documentation Content -->
+        <main class="docs-content" id="docs-content">
+            
+            <div id="content-area">
+                <div class="loading">Loading markdown...</div>
+            </div>
+        </main>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+
+        // Documentation viewer functionality
+        const docsContent = document.getElementById('content-area');
+        const docLinks = document.querySelectorAll('.docs-nav a[data-doc]');
+        
+        
+        function resolveDocUrl(docPath) {
+            if (!docPath) {
+                return '';
+            }
+
+            if (/^https?:\/\//i.test(docPath)) {
+                return docPath;
+            }
+
+            return new URL(docPath, window.location.href).toString();
+        }
+
+        // Load documentation
+        async function loadDoc(docPath) {
+            docsContent.innerHTML = '<div class="loading">Loading documentation...</div>';
+
+            const resolvedUrl = resolveDocUrl(docPath);
+            
+            try {
+                const response = await fetch(resolvedUrl, { cache: 'no-store' });
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}`);
+                }
+                const markdown = await response.text();
+
+                docsContent.innerHTML =
+                '<a href="index.html" class="back-btn">← Back to Home</a>' + marked.parse(markdown);
+            } catch (error) {
+                docsContent.innerHTML = `
+                    <a href="index.html" class="back-btn">← Back to Home</a>
+                    <div class="loading">
+                        <p>Failed to load documentation: ${error.message}</p>
+                        <p>Please start the app with the local web server and try again.</p>
+                    </div>
+                `;
+            }
+        }
+        
+        // Event listeners for doc links
+        docLinks.forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const docPath = link.getAttribute('data-doc');
+                
+                // Update active state
+                docLinks.forEach(l => l.classList.remove('active'));
+                link.classList.add('active');
+                
+                // Load documentation
+                loadDoc(docPath);
+                
+                // Update URL without reloading
+                history.pushState({}, '', `?doc=${docPath}`);
+            });
+        });
+        
+        // Load initial doc from URL or default
+        const urlParams = new URLSearchParams(window.location.search);
+        const initialDoc = urlParams.get('doc') || 'docs/README.md';
+        
+        // Set active link
+        docLinks.forEach(link => {
+            if (link.getAttribute('data-doc') === initialDoc) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
+        
+        // Load initial documentation
+        loadDoc(initialDoc);
+        
+        // Handle browser back/forward
+        window.addEventListener('popstate', () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const docPath = urlParams.get('doc') || 'docs/README.md';
+            
+            docLinks.forEach(link => {
+                if (link.getAttribute('data-doc') === docPath) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+            
+            loadDoc(docPath);
+        });
+    </script>
+</body>
+</html>
