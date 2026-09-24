@@ -128,8 +128,25 @@ if (query === "help" || !query) {
 
     const files = fs.readdirSync(versionsDir)
         .filter(f => /^V.*\.md$/i.test(f))
-        .sort()
-        .reverse();
+        .sort((a, b) => {
+
+        const va = a
+            .replace(/^V/i, "")
+            .replace(".md", "");
+
+        const vb = b
+            .replace(/^V/i, "")
+            .replace(".md", "");
+
+        return vb.localeCompare(
+            va,
+            undefined,
+        {
+            numeric: true,
+            sensitivity: "base"
+        }
+        );
+        });
 
     if (files.length === 0) {
         return message.reply("No versions found.");
