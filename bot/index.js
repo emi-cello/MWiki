@@ -81,6 +81,46 @@ client.on("messageCreate", async (message) => {
         "versions"
     );
 
+    // ?m help
+    if (query === "help" || !query) {
+        return message.reply(`
+📚 **MoonWiki Commands**
+
+\`?m help\`
+Show this help menu.
+
+\`?m list\`
+Show all available versions.
+
+\`?m latest\`
+Show the latest version.
+
+\`?m V1.0.0\`
+Show a specific version.
+`);
+    }
+
+    // ?m list
+    if (query === "list") {
+
+        const files = fs.readdirSync(versionsDir)
+            .filter(f => /^V.*\.md$/i.test(f))
+            .sort()
+            .reverse();
+
+        if (files.length === 0) {
+            return message.reply("No versions found.");
+        }
+
+        const list = files
+            .map(f => f.replace(".md", ""))
+            .join("\n");
+
+        return message.reply(
+            `📋 **Available Versions:**\n\n${list}`
+        );
+    }
+
     // ?m latest
     if (query === "latest") {
 
@@ -117,7 +157,7 @@ client.on("messageCreate", async (message) => {
 
     if (!fs.existsSync(fullPath)) {
         return message.reply(
-            `Version ${query} not found.`
+            `❌ Version ${query} not found. Try \`?m list\``
         );
     }
 
@@ -131,7 +171,6 @@ client.on("messageCreate", async (message) => {
         content.slice(0, 1800) +
         "\n```"
     );
-
 });
 
 client.login(process.env.DISCORD_TOKEN);
