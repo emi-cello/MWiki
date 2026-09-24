@@ -31,16 +31,19 @@ client.on("messageCreate", async (message) => {
 
         const content = message.content.trim();
 
-        const versionMatch =
-            content.match(/v\d+\.\d+(?:\.\d+)?/i) ||
-            content.match(/\d+\.\d+\.\d+/);
+        const versionMatch = content.match(
+            content.match(/v\d+\.\d+(?:\.\d+)?/i)
+        );
 
         if (!versionMatch) {
             console.log("No version found in message.");
             return;
         }
 
-        const version = versionMatch[0].replace(/^v/i, "");
+        const version =
+            versionMatch[0]
+                .replace(/^v/i, "")
+                .trim();
 
         const markdown = `# Version ${version}
 
